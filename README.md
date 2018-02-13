@@ -1,11 +1,9 @@
-# Ansible Role - Fedora EC2 instance
+# Ansible Role - EC2 VPC with single public subnetwork
 
-Provisions Fedora 27 on AWS EC2. It ensures that:
-- Fedora 27 AWS EC2 node is provisioned and started
-- public SSH key is uploaded and assigned to provisioned EC2 node
-- EC2 security group firewall has been configured to accept only SSH traffic
-- OpenSSH server is up and running
-- Ansible-friendly version of Python is installed on provisioned instance
+Provisions EC2 VPN with a single public subnetwork. It ensures that:
+- EC2 VPC is created 
+- EC2 Internet Gateway is created
+- single public subnetwork is created and assigned to VPC and Internet Gateway
 
 ## Compatibility
 
@@ -23,18 +21,12 @@ You can specify AWS credentials either in Boto file (for example `~/.boto`) or u
 
 ## Installation 
 
-    ansible-galaxy install hekonsek.fedora-ec2,0.11
+    ansible-galaxy install hekonsek.fedora-ec2-vpc-single,0.0
 
 ## Role variables
 
-- `instance_region` - AWS region to use. Default region is `us-east-1` i.e. the cheapest one.
-- `instance_name` - name tag for created instance. Default value is `defaultServer`.
-- `instance_type` - instance type. Default value is `t2.medium`.
-- `instance_ssd` - indicates if SSD disk should be used. Default value is `true`.
-- `keyName` - name that should be assigned to the uploaded SSH public key. Default value is `defaultKey`.
-- `group` - name of the security group to create and use. Default value is `default`.
-- `volume_size` - volume size in GB. Default value is `8`.
-- `volume_device_name` - name of the volume device. Default value is `/dev/sda1`.
+- `vpc_name` - **Required** VPC name. It is also used as prefix for names of subnet, internet gateway and route table.
+- `region` - AWS region to use. Default region is `us-east-1` i.e. the cheapest one.
 
 ## Example playbook
 
