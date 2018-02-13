@@ -1,0 +1,40 @@
+- name: Creating VPC {{ vpc_name }}
+  ec2_vpc_net:
+    name: "{{ vpc_name }}"
+    cidr_block: 10.0.0.0/16
+    region: "{{ region }}"
+    tags:
+      name: "{{ vpc_name }}"
+  register: vpc_output
+
+- name: Create subnet
+  ec2_vpc_subnet:
+    region: "{{ region }}"
+    state: present
+    vpc_id: "{{vpc_output.vpc.id}}"
+    cidr: 10.0.0.0/24
+    resource_tags:
+      Name: "{{ vpc_name }}_subnet"
+  register: subnet_output
+
+- name: Create Internet gateway
+  ec2_vpc_igw:
+    region: "{{ region }}"
+    vpc_id: "{{vpc_output.vpc.id}}"
+    state: present
+    tags:
+      Name: "{{ vpc_name }}_internet_gateway"
+  register: internet_gateway_output
+
+- name: Set up subnet route table
+  ec2_vpc_route_table:
+    vpc_id: "{{vpc_output.vpc.id}}"
+    region: "{{ region }}"
+    tags:
+      Name: "{{ vpc_name }}_route_table"
+    subnets:
+      - "{{ subnet_output.subnet.id }}"
+    routes:
+      - dest: 0.0.0.0/0
+        gateway_id: "{{ internet_gateway_output.gateway_id }}"
+  register: public_route_table
