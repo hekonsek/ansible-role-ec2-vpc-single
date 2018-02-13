@@ -1,9 +1,1 @@
 region: us-east-1
-
-instance_name: defaultServer
-instance_type: t2.medium
-instance_ssd: true
-key_name: defaultKey
-group: default
-volume_size: 8
-volume_device_name: /dev/sda1
